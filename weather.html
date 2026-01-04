@@ -1,0 +1,104 @@
+<!Doctype html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Погода — Current Weather</title>
+    <link rel="stylesheet" href="weather.css" />
+    <script src="index.js" defer></script>
+</head>
+<body>
+<main class="page">
+    <section class="card">
+        <header class="card_header">
+            <div>
+                <h1 class="title">Поточна погода..</h1>
+                <p class="subtitle">Введи місто або використай геолокацію</p>
+            </div>
+
+            <form id="searchForm" class="search" autocomplete="off">
+                <input
+                        id="cityInput"
+                        class="search_input"
+                        type="text"
+                        placeholder="Search city..."
+                        aria-label="Введіть місто"
+                        required
+                />
+
+                <button class="search_btn" type="submit" aria-label="Пошук">Search</button>
+                <button id="geoBtn" class="search_btn search_btn-ghost" type="button" aria-label="Моя геолокація">Geo</button>
+            </form>
+        </header>
+        <div class="card_body">
+            <div id="msg" class="msg" role="status" aria-live="polite"></div>
+            <div id="result" class="result hidden">
+                <div class="result_top">
+                    <div class="place">
+                        <div class="place_city" id="cityName">—</div>
+                        <div class="place_desc" id="weatherDesc">—</div>
+                    </div>
+                    <div class="date" id="dateText">—</div>
+                </div>
+
+
+                <div class="result_main">
+                    <div class="iconWrap">
+                        <img id="weatherIcon"   src="https://openweathermap.org/img/wn/01d@2x.png" alt="Іконка погоди">
+                    </div>
+                    <div class="temp">
+                        <div class="temp_value" id="tempNow">-°C</div>
+                        <div class="temp_label">Поточна температура</div>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat_label">Min temperature</div>
+                            <div class="stat_value" id="tempMin">-°C</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat_label">Max temperature</div>
+                            <div class="stat_value" id="tempMax">°C</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat_label">Wind speed (m/s)</div>
+                            <div class="stat_value" id="windSpeed">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section id="forecast" class="forecast hidden" aria-label="Прогноз на 5 днів">
+                <div class="forecast_header">
+                    <h2 class="forecast_title">FORECAST (6 DAYS)</h2>
+                    <div id="forecastHint" class="forecast_hint">—</div>
+                </div>
+
+                <div id="forecastGrid" class="forecast_grid"></div>
+            </section>
+        </div>
+
+        <footer class="card_footer">
+            <small>Data by OpenWeatherMap</small>
+        </footer>
+    </section>
+</main>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal_backdrop" data-close="1"></div>
+    <div class="modal_panel">
+        <div class="modal_header">
+            <div class="modal_icon" id="modalIcon">!</div>
+            <div class="modal_titles">
+                <div id="modalTitle" class="modal_title">Помилка</div>
+                <div id="modalSubtitle" class="modal_subtitle">—</div>
+            </div>
+        </div>
+
+        <div id="modalBody" class="modal_body">—</div>
+
+        <div class="modal_footer">
+            <button id="modalOk" class="btn">OK</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
