@@ -18,9 +18,9 @@
 
 **Доказ у коді:**
 - HTML: форма пошуку та блоки результату:  
-  https://github.com/likar3400/weather_api_/blob/c417e81e44e00b10bc58713640e125bf8d094701/weather.html#L19
+   PASTE LINK:'https://github.com/likar3400/weather_api_/blob/c417e81e44e00b10bc58713640e125bf8d094701/weather.html#L19-L31'
 - CSS: стилізація card/layout/forecast/modal:  
-  PASTE LINK: `weather.css#L..-L..`
+  PASTE LINK: `https://github.com/likar3400/weather_api_/blob/main/weather.css#L1-L272`
 - JS: DOM references + event handlers:  
 
 
