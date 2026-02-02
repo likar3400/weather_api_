@@ -20,7 +20,7 @@
 - HTML: форма пошуку та блоки результату:  
    PASTE LINK:'https://github.com/likar3400/weather_api_/blob/c417e81e44e00b10bc58713640e125bf8d094701/weather.html#L19-L31'
 - CSS: стилізація card/layout/forecast/modal:  
-  PASTE LINK: `https://github.com/likar3400/weather_api_/blob/c417e81e44e00b10bc58713640e125bf8d094701/weather.css#L1-L272`
+  PASTE LINK: `[weather.cs](https://github.com/likar3400/weather_api_/blob/fc9260062ab7f6bd93aef1e7907acb05d8c89dbb/weather.css#L1-L272)`
 - JS: DOM references + event handlers:  
 
 
@@ -76,11 +76,4 @@
 
 ---
 
-## Як зробити permalink на рядки GitHub (щоб вставити у PASTE LINK)
-
-1. Відкрий файл у GitHub (наприклад `index.js`)
-2. Натисни на номер рядка зліва (наприклад `20`)
-3. Щоб взяти діапазон: клік по першому рядку → **Shift + клік** по останньому
-4. У адресному рядку з’явиться `#L20-L60` — скопіюй URL
-5. Встав URL у цей документ у місце `PASTE LINK:`
 
