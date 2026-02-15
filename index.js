@@ -72,48 +72,63 @@ function round1(n) {
     return Math.round(n * 10) / 10;
 }
 
+function buildUrl(endpoint, params) {
+    const apiKey = getApiKey();
+    if (!apiKey) {
+        const err = new Error("API key missing");
+        err.status = 401;
+        throw err;
+    }
+
+    const url = new URL(CONFIG.API_BASE + endpoint);
+    url.searchParams.set("appid", apiKey);
+    url.searchParams.set("units", CONFIG.UNITS);
+    url.searchParams.set("lang", CONFIG.LANG);
+
+    Object.entries(params).forEach(([key, value]) =>
+        url.searchParams.set(key, value)
+    );
+
+    return url.toString();
+}
 async function fetchJson(url) {
-    const res = await fetch(url);
-    const data = await res.json();
+    let res;
+
+    try {
+        res = await fetch(url);
+    } catch {
+        const err = new Error("Network error");
+        err.status = 0;
+        throw err;
+    }
+
+    const data = await res.json().catch(() => ({}));
+
     if (!res.ok) {
         const err = new Error(data.message || "Error");
         err.status = res.status;
         throw err;
     }
+
     return data;
 }
 
-async function fetchWeatherByCity(city) {
-    const url =
-        `https://api.openweathermap.org/data/2.5/weather` +
-        `?q=${encodeURIComponent(city)}` +
-        `&appid=${API_KEY}&units=metric&lang=uk`;
-    return fetchJson(url);
+function fetchWeatherByCity(city) {
+    return fetchJson(buildUrl("/weather", { q: city }));
 }
 
-async function fetchWeatherByCoords(lat, lon) {
-    const url =
-        `https://api.openweathermap.org/data/2.5/weather` +
-        `?lat=${lat}&lon=${lon}` +
-        `&appid=${API_KEY}&units=metric&lang=uk`;
-    return fetchJson(url);
+function fetchWeatherByCoords(lat, lon) {
+    return fetchJson(buildUrl("/weather", { lat, lon }));
 }
 
-async function fetchForecastByCity(city) {
-    const url =
-        `https://api.openweathermap.org/data/2.5/forecast` +
-        `?q=${encodeURIComponent(city)}` +
-        `&appid=${API_KEY}&units=metric&lang=uk`;
-    return fetchJson(url);
+function fetchForecastByCity(city) {
+    return fetchJson(buildUrl("/forecast", { q: city }));
 }
 
-async function fetchForecastByCoords(lat, lon) {
-    const url =
-        `https://api.openweathermap.org/data/2.5/forecast` +
-        `?lat=${lat}&lon=${lon}` +
-        `&appid=${API_KEY}&units=metric&lang=uk`;
-    return fetchJson(url);
+function fetchForecastByCoords(lat, lon) {
+    return fetchJson(buildUrl("/forecast", { lat, lon }));
 }
+
 
 function dayNameUA(date) {
     return ["Нд","Пн","Вт","Ср","Чт","Пт","Сб"][date.getDay()];
