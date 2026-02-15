@@ -32,26 +32,29 @@
 
 **Доказ у коді:**
 - submit handler:  
-https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L227-L239C4
+[index.js (submit handler)](https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L227-L239C4)
 
 - loadByCity flow:  
-  https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L197-L210C2
-
+   [index.js (loadByCity)](https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L197-L210C2)
 
 ## 3) DRY (Don’t Repeat Yourself)
 
-**Суть:** повторювану логіку винесено в окремі функції:
-- `buildUrl()` — збір URL для API (параметри в одному місці)
-- `fetchJson()` — універсальний fetch з обробкою помилок
-- `loadWeather()` — один сценарій завантаження замість дублювання
+**Суть:** частина повторюваної логіки винесена в окремі універсальні функції:
+
+- `fetchJson()` — одна функція для виконання HTTP-запитів та обробки помилок
+- `formatDateUA()` — централізоване форматування дати
+- `round1()` — універсальне округлення чисел
+
+Це дозволяє уникнути дублювання коду в різних частинах застосунку.
 
 **Доказ у коді:**
-- `buildUrl()` + `fetchJson()`  
-  PASTE LINK: `index.js#L..-L..`
-- `loadWeather()`  
-  PASTE LINK: `index.js#L..-L..`
 
----
+- `fetchJson()`  
+  https://github.com/likar3400/weather_api_/blob/main/index.js#LXX-LYY
+
+- `formatDateUA()` + `round1()`  
+  https://github.com/likar3400/weather_api_/blob/main/index.js#LAA-LBB
+
 
 ## 4) Defensive Programming (захист від помилок)
 
