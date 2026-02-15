@@ -27,13 +27,16 @@
 
 ## 2) KISS (Keep It Simple)
 
-**Суть:** використано JS без зайвих бібліотек; сценарій “ввів місто → отримав дані → показав” реалізовано прямолінійно.
+**Суть:** використано чистий JavaScript без додаткових бібліотек; логіка проста:  
+користувач вводить місто → submit → виклик loadByCity → отримання даних → рендер на сторінці.
 
 **Доказ у коді:**
-- submit handler + load flow:  
-  PASTE LINK: ``
+- submit handler:  
+https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L227-L239C4
 
----
+- loadByCity flow:  
+  https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L197-L210C2
+
 
 ## 3) DRY (Don’t Repeat Yourself)
 
