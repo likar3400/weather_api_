@@ -1,4 +1,19 @@
-const API_KEY = "915ae9c65d98a66c75a2f08e34d35694";
+const CONFIG = {
+    API_BASE: "...",
+    ICON_BASE: "...",
+    UNITS: "metric",
+    LANG: "uk",
+    KEY_STORAGE: "owm_api_key"
+};
+
+function getApiKey() {
+    let key = localStorage.getItem(CONFIG.KEY_STORAGE) || "";
+    if (!key) {
+        key = prompt("Введіть API ключ OpenWeatherMap:")?.trim() || "";
+        if (key) localStorage.setItem(CONFIG.KEY_STORAGE, key);
+    }
+    return key;
+}
 const form = document.getElementById("searchForm");
 const cityInput = document.getElementById("cityInput");
 const geoBtn = document.getElementById("geoBtn");
