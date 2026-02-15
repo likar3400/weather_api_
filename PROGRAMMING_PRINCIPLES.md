@@ -18,9 +18,9 @@
 
 **Доказ у коді:**
 - HTML: форма пошуку та блоки результату:  
- [weather.html search form ](https://github.com/likar3400/weather_api_/blob/main/weather.html#L19-L31)
+ [weather.html (search form) ](https://github.com/likar3400/weather_api_/blob/main/weather.html#L19-L31)
 - CSS: стилізація card/layout/forecast/modal:  
-[weather.css ( card/layout/forecast/modal](https://github.com/likar3400/weather_api_/blob/main/weather.css#L1-L272)
+[weather.css (stylization layouts,cards,forecast,modal_window)](https://github.com/likar3400/weather_api_/blob/main/weather.css#L1-L272)
 - JS: DOM references:  
   [index.js (DOM references)](https://github.com/likar3400/weather_api_/blob/dae19e15c4da7c265eff07c3947e7d60a77cf089/index.js#L1-L22C60)
 ---
