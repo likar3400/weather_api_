@@ -50,10 +50,10 @@
 **Доказ у коді:**
 
 - `fetchJson()`  
-  https://github.com/likar3400/weather_api_/blob/main/index.js#LXX-LYY
+   [index.js (fetchJson)](https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L60-L69)
 
 - `formatDateUA()` + `round1()`  
-  https://github.com/likar3400/weather_api_/blob/main/index.js#LAA-LBB
+[index.js (formatDateUA + round1)](https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L49-L58C2)
 
 
 ## 4) Defensive Programming (захист від помилок)
@@ -61,24 +61,50 @@
 **Суть:** застосунок:
 - перевіряє ввід (`trim`, empty)
 - показує повідомлення користувачу через модальне вікно
-- обробляє різні типи помилок (404/401/429/мережа)
+- обробляє помилки HTTP через централізовану функцію
 
 **Доказ у коді:**
-- перевірка вводу:  
-  PASTE LINK: `index.js#L..-L..`
-- status-based error messages:  
-  PASTE LINK: `index.js#L..-L..`
+
+- перевірка вводу (submit handler):  
+  [index.js (input validation)](https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L227-L239C4)
+
+- обробка HTTP помилок у fetchJson():  
+[index.js (fetchJson error handling)](https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L60-L69)
+
+- модальне повідомлення openModal():  
+  [index.js (openModal)](https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L24-L30)
 
 ---
 
 ## 5) Readability / Clean Code (читабельність)
 
-**Суть:** логіка поділена на блоки (DOM / UI helpers / API / render / events), назви функцій зрозумілі (`renderWeather`, `renderForecast`, `aggregateForecast`).
+**Суть:** код структурований та поділений на логічні блоки, що полегшує його розуміння та підтримку.  
+Функції мають зрозумілі назви, які прямо описують їхню відповідальність.  
+Кожна функція виконує одну конкретну задачу (Single Responsibility).
+
+Логічна структура файлу:
+- DOM references — отримання елементів сторінки
+- UI helpers — допоміжні функції (`formatDateUA`, `round1`)
+- API — функції отримання даних (`fetchJson`, `fetchWeather...`)
+- Data processing — обробка прогнозу (`aggregateForecast`)
+- Render — відображення даних (`renderWeather`, `renderForecast`)
+- Events — обробники подій користувача
+
+Це забезпечує:
+- легкість читання
+- простоту підтримки
+- зрозумілу архітектуру файлу
 
 **Доказ у коді:**
-- блок render + aggregate:  
-  PASTE LINK: `index.js#L..-L..`
 
----
+- обробка та агрегація даних:  
+  [index.js (aggregateForecast)](https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L107-L133C2)
+
+- рендер прогнозу:  
+  [index.js (renderForecast)](https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L136-L167C2)
+
+- рендер поточної погоди:  
+  [index.js (renderWeather)](https://github.com/likar3400/weather_api_/blob/5bfe2d3be17aa29c8e3d133fcd4e351044ab73f1/index.js#L170-L194C2)
+
 
 
