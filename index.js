@@ -1,6 +1,6 @@
 const CONFIG = {
-    API_BASE: "...",
-    ICON_BASE: "...",
+    API_BASE: "https://api.openweathermap.org/data/2.5",
+    ICON_BASE: "https://openweathermap.org/img/wn",
     UNITS: "metric",
     LANG: "uk",
     KEY_STORAGE: "owm_api_key"
@@ -14,6 +14,7 @@ function getApiKey() {
     }
     return key;
 }
+
 const form = document.getElementById("searchForm");
 const cityInput = document.getElementById("cityInput");
 const geoBtn = document.getElementById("geoBtn");
@@ -36,26 +37,6 @@ const modalBody = document.getElementById("modalBody");
 const modalOk = document.getElementById("modalOk");
 const weatherIcon = document.getElementById("weatherIcon");
 
-function openModal(title, subtitle, body) {
-    modalTitle.textContent = title;
-    modalSubtitle.textContent = subtitle || "";
-    modalBody.textContent = body || "";
-    modal.classList.remove("hidden");
-    setTimeout(() => modalOk.focus(), 0);
-}
-
-function closeModal() {
-    modal.classList.add("hidden");
-}
-
-modalOk.addEventListener("click", closeModal);
-modal.addEventListener("click", e => {
-    if (e.target?.dataset?.close === "1") closeModal();
-});
-window.addEventListener("keydown", e => {
-    if (!modal.classList.contains("hidden") && e.key === "Escape") closeModal();
-});
-
 function setMessage(text, type = "") {
     msg.className = "msg" + (type ? " " + type : "");
     msg.textContent = text;
@@ -71,6 +52,19 @@ function formatDateUA(date = new Date()) {
 function round1(n) {
     return Math.round(n * 10) / 10;
 }
+
+function openModal(title, subtitle, body) {
+    modalTitle.textContent = title;
+    modalSubtitle.textContent = subtitle || "";
+    modalBody.textContent = body || "";
+    modal.classList.remove("hidden");
+}
+
+function closeModal() {
+    modal.classList.add("hidden");
+}
+
+modalOk.addEventListener("click", closeModal);
 
 function buildUrl(endpoint, params) {
     const apiKey = getApiKey();
@@ -91,6 +85,7 @@ function buildUrl(endpoint, params) {
 
     return url.toString();
 }
+
 async function fetchJson(url) {
     let res;
 
@@ -129,6 +124,13 @@ function fetchForecastByCoords(lat, lon) {
     return fetchJson(buildUrl("/forecast", { lat, lon }));
 }
 
+function explainError(err) {
+    if (err.status === 401) return "Невірний або відсутній API ключ.";
+    if (err.status === 404) return "Місто не знайдено.";
+    if (err.status === 429) return "Забагато запитів. Спробуйте пізніше.";
+    if (err.status === 0) return "Помилка мережі.";
+    return "Сталася помилка.";
+}
 
 function dayNameUA(date) {
     return ["Нд","Пн","Вт","Ср","Чт","Пт","Сб"][date.getDay()];
@@ -145,13 +147,19 @@ function aggregateForecast(data) {
     return days.map(d => {
         const items = map[d];
         const temps = items.map(i => i.main.temp);
+
         let best = items[0];
         let bestDiff = Infinity;
+
         for (const it of items) {
             const hour = new Date(it.dt * 1000).getHours();
             const diff = Math.abs(hour - 12);
-            if (diff < bestDiff) { best = it; bestDiff = diff; }
+            if (diff < bestDiff) {
+                best = it;
+                bestDiff = diff;
+            }
         }
+
         return {
             date: new Date(d),
             min: Math.min(...temps),
@@ -162,7 +170,6 @@ function aggregateForecast(data) {
     });
 }
 
-
 function renderForecast(days, label) {
     forecastGrid.innerHTML = "";
     forecastHint.textContent = label;
@@ -172,100 +179,74 @@ function renderForecast(days, label) {
         const el = document.createElement("div");
         el.className = "fcard";
 
-        const iconUrl = d.icon
-            ? `https://openweathermap.org/img/wn/${d.icon}@2x.png`
-            : "";
+        const iconUrl = `${CONFIG.ICON_BASE}/${d.icon}@2x.png`;
 
         el.innerHTML = `
-      <div class="fcard_day">${dayNameUA(d.date)}</div>
-      <div class="fcard_date">${formatDateUA(d.date)}</div>
-      <img class="fcard_icon"
-     src="${iconUrl}"
-     alt="Іконка прогнозу"
-     loading="lazy"
-     referrerpolicy="no-referrer">
-
-      <div class="fcard_desc">${d.desc}</div>
-      <div class="fcard_temps">
-        <span>Min: ${round1(d.min)}°C</span>
-        <span>Max: ${round1(d.max)}°C</span>
-      </div>
-    `;
+            <div class="fcard_day">${dayNameUA(d.date)}</div>
+            <div class="fcard_date">${formatDateUA(d.date)}</div>
+            <img class="fcard_icon" src="${iconUrl}" alt="Іконка прогнозу">
+            <div class="fcard_desc">${d.desc}</div>
+            <div class="fcard_temps">
+                <span>Min: ${round1(d.min)}°C</span>
+                <span>Max: ${round1(d.max)}°C</span>
+            </div>
+        `;
 
         forecastGrid.appendChild(el);
     });
 }
 
-
 function renderWeather(data) {
     cityName.textContent = data.name;
     dateText.textContent = formatDateUA();
     weatherDesc.textContent = data.weather[0].description;
-    const iconCode = data.weather[0].icon;
 
-    weatherIcon.onload = () => { weatherIcon.style.display = "block"; };
-    weatherIcon.onerror = () => { weatherIcon.style.display = "none"; };
-
-    weatherIcon.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    weatherIcon.src = `${CONFIG.ICON_BASE}/${data.weather[0].icon}@2x.png`;
     weatherIcon.style.display = "block";
 
     tempNow.textContent = `${round1(data.main.temp)}°C`;
+
     const minV = round1(data.main.temp_min);
     const maxV = round1(data.main.temp_max);
-    if (minV === maxV) {
-        tempMin.textContent = "—";
-        tempMax.textContent = "—";
-    } else {
-        tempMin.textContent = `${minV}°C`;
-        tempMax.textContent = `${maxV}°C`;
-    }
+
+    tempMin.textContent = minV === maxV ? "—" : `${minV}°C`;
+    tempMax.textContent = minV === maxV ? "—" : `${maxV}°C`;
+
     windSpeed.textContent = round1(data.wind.speed);
+
     result.classList.remove("hidden");
 }
 
-
-async function loadByCity(city) {
+async function loadWeather({ city, lat, lon }) {
     setMessage("Завантаження...");
     result.classList.add("hidden");
     forecast.classList.add("hidden");
 
-    const [w, f] = await Promise.all([
-        fetchWeatherByCity(city),
-        fetchForecastByCity(city)
-    ]);
+    const isCity = typeof city === "string";
 
-    renderWeather(w);
-    renderForecast(aggregateForecast(f), w.name);
-    setMessage("Готово", "success");
-}
+    try {
+        const [w, f] = await Promise.all([
+            isCity ? fetchWeatherByCity(city) : fetchWeatherByCoords(lat, lon),
+            isCity ? fetchForecastByCity(city) : fetchForecastByCoords(lat, lon)
+        ]);
 
-async function loadByCoords(lat, lon) {
-    setMessage("Завантаження...");
-    result.classList.add("hidden");
-    forecast.classList.add("hidden");
-
-    const [w, f] = await Promise.all([
-        fetchWeatherByCoords(lat, lon),
-        fetchForecastByCoords(lat, lon)
-    ]);
-
-    renderWeather(w);
-    renderForecast(aggregateForecast(f), w.name);
-    setMessage("Готово", "success");
+        renderWeather(w);
+        renderForecast(aggregateForecast(f), w.name);
+        setMessage("Готово", "success");
+    } catch (err) {
+        openModal("Помилка", "Запит", explainError(err));
+        setMessage("Помилка", "error");
+    }
 }
 
 form.addEventListener("submit", async e => {
     e.preventDefault();
     const city = cityInput.value.trim();
     if (!city) {
-        openModal("Помилка", "Місто", "Введи назву міста");
+        openModal("Помилка", "Місто", "Введіть назву міста");
         return;
     }
-    try {
-        await loadByCity(city);
-    } catch {
-        openModal("Помилка", "Пошук", "Місто не знайдено");
-    }
+    await loadWeather({ city });
 });
 
 geoBtn.addEventListener("click", () => {
@@ -275,7 +256,7 @@ geoBtn.addEventListener("click", () => {
     }
 
     navigator.geolocation.getCurrentPosition(
-        pos => loadByCoords(pos.coords.latitude, pos.coords.longitude),
+        pos => loadWeather({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
         () => openModal("Помилка", "Геолокація", "Доступ заборонено")
     );
 });
